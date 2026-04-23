@@ -34,3 +34,23 @@ build/
 *.safetensors
 *.ckpt
 *.pt
+
+# Raw scraped corpus — large binary, do not commit
+data/raw/
+
+# Derived / processed data — reproducible from scripts, don't commit
+data/processed/
+
+# Model weights / caches — large, do not commit
+models/
+
+# Training logs (reproducible, noisy)
+logs/
+
+# Superpowers brainstorming session data
+.superpowers/
+
+# Author's personal work-in-progress (drafts, not for public repo)
+half_presnt/
+*.pptx
+docum.pdf

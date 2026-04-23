@@ -1,0 +1,13 @@
+{
+  "head": "risk",
+  "model": "law-ai/InLegalBERT fine-tuned with LoRA (rank 8, alpha 16)",
+  "test_set_size": 640,
+  "macro_f1": 0.7973,
+  "weighted_f1": 0.8095,
+  "accuracy": 0.81,
+  "per_class_f1": {
+    "standard": 0.8621,
+    "aggressive": 0.7694,
+    "illegal": 0.7605
+  }
+}

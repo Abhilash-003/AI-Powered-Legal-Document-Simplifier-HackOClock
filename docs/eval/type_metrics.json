@@ -1,0 +1,20 @@
+{
+  "head": "type",
+  "model": "law-ai/InLegalBERT fine-tuned with LoRA (rank 8, alpha 16)",
+  "test_set_size": 2316,
+  "macro_f1": 0.9102,
+  "weighted_f1": 0.8922,
+  "accuracy": 0.89,
+  "per_class_f1": {
+    "rent_escalation": 0.9692,
+    "probation": 0.9612,
+    "ip_ownership": 0.9588,
+    "arbitration": 0.9544,
+    "non_compete": 0.9481,
+    "eviction": 0.8936,
+    "pf_esic": 0.8889,
+    "notice_period": 0.8844,
+    "liability": 0.8727,
+    "termination": 0.7703
+  }
+}
