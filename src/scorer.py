@@ -37,7 +37,8 @@ def score(embedding: np.ndarray, clause_type: str, ml_risk: str, ml_conf: float)
             "final_risk": _ml_to_final(ml_risk),
         }
     # embedding expected L2-normalized; refs same
-    sims = refs @ embedding  # dot = cosine when both normalized
+    with np.errstate(all="ignore"):  # suppress cosmetic matmul fp warnings
+        sims = refs @ embedding  # dot = cosine when both normalized
     mean_sim = float(np.mean(sims))
     # percentile framing: lower similarity → more unusual → higher percentile
     percentile = int(round((1.0 - mean_sim) * 100))

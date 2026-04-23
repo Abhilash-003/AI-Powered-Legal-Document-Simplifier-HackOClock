@@ -53,8 +53,12 @@ def analyze(pdf_bytes: Optional[bytes] = None, text: Optional[str] = None) -> di
     for clause, pred, emb in zip(raw_clauses, predictions, embeddings):
         sc = scorer.score(emb, pred.clause_type, pred.risk_level_ml, pred.risk_confidence)
         bbox_pairs = parser.bboxes_for_char_range(doc, clause.char_start, clause.char_end)
+        # 1-indexed clause_id — matches PDF convention ("5. Notice Period") so
+        # the UI, chat citations, and user queries like "explain clause 5" all
+        # agree on what clause 5 is.
+        display_id = clause.id + 1
         clauses.append({
-            "clause_id": clause.id,
+            "clause_id": display_id,
             "text": clause.text,
             "char_start": clause.char_start,
             "char_end": clause.char_end,
@@ -71,7 +75,7 @@ def analyze(pdf_bytes: Optional[bytes] = None, text: Optional[str] = None) -> di
         })
         # Only create highlights for risky clauses (Medium/High) — keep Low subtle/skipped
         for page_num, bbox in bbox_pairs:
-            highlights.append(_build_highlight(clause.id, page_num, bbox, sc["final_risk"]))
+            highlights.append(_build_highlight(display_id, page_num, bbox, sc["final_risk"]))
 
     # Stage 7: render PDF with overlays (PDF input only)
     page_images = pdf_renderer.render_pages(pdf_bytes, highlights) if pdf_bytes else []

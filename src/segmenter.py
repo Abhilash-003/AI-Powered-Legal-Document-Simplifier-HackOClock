@@ -32,20 +32,27 @@ CONTRACT TEXT:
 {full_text}
 >>>
 
-TASK: Return a JSON array of clauses. Include every substantive clause as a separate entry. Preserve nested sub-clauses as separate entries (e.g. clause 5, 5(a), 5(b) are three entries). Skip pure boilerplate like the WHEREAS preamble unless it imposes actual obligations. Include schedules/annexures clauses if they are operative.
+TASK: Return a JSON array of clauses. Include every substantive clause as a separate entry. Skip pure boilerplate like the WHEREAS preamble unless it imposes actual obligations. Include schedules/annexures clauses if they are operative.
+
+SEGMENTATION RULES (important):
+1. Each top-level numbered clause (e.g. "1.", "2.", "Clause 5") is ONE entry — include its entire body, including any lead-in like "The Employee shall be entitled to the following:" and the bulleted list that follows.
+2. Keep enumerated lists that share a single obligation as ONE clause. Example: a leaves clause that reads "The Employee shall receive: (a) 15 days Earned Leave; (b) 12 days Casual Leave; (c) 6 days Sick Leave" is ONE clause about leave entitlement — NOT three clauses. Same for fee schedules, insurance benefit lists, etc.
+3. Only split sub-clauses when each sub-entry imposes a DISTINCT, self-contained obligation. Example: "5. Termination. (a) The Company may terminate for cause with immediate effect. (b) The Employee may resign with 30 days' notice." — here (a) and (b) are two distinct obligations, so split into two entries (but each entry must include its own lead-in context so it reads standalone).
+4. Never emit a fragment like "(b) 12 days of Casual Leave" as its own entry with no context. If you're tempted to, you're over-splitting — merge it back into the parent clause.
+5. Section headings on their own (e.g. just "TERMINATION") are NOT clauses. Attach them to the clause body that follows.
 
 Each entry MUST have exactly these keys:
   "id": 0-indexed sequential integer
-  "text": the verbatim clause text as it appears in the contract
+  "text": the verbatim clause text as it appears in the contract (preserve wording, punctuation, case; include the full enumeration when rule 2 applies)
   "approx_start": approximate character offset where this clause begins in the input
   "approx_end": approximate character offset where this clause ends
 
 OUTPUT FORMAT: ONLY the JSON array. No preamble, no markdown fences, no explanation. The response must parse as JSON directly.
 
-Example:
+Example (note how the leaves clause stays as ONE entry even though it enumerates three leave types):
 [
   {{"id": 0, "text": "The Lessee shall pay a monthly rent of Rs. 25,000...", "approx_start": 412, "approx_end": 567}},
-  {{"id": 1, "text": "This Agreement shall commence on...", "approx_start": 568, "approx_end": 698}}
+  {{"id": 1, "text": "The Employee shall be entitled to the following leaves per calendar year: (a) 15 days of Earned Leave (EL); (b) 12 days of Casual Leave (CL); (c) 6 days of Sick Leave (SL).", "approx_start": 568, "approx_end": 742}}
 ]"""
 
 
@@ -65,7 +72,13 @@ def segment(full_text: str, model: str = MODEL) -> list[Clause]:
     )
     raw = resp.content[0].text
     raw = _strip_code_fence(raw)
-    data = json.loads(raw)
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        # Claude occasionally emits unescaped quotes / control chars inside
+        # verbatim legal text. Fall back to a repair-tolerant parser.
+        from json_repair import repair_json
+        data = json.loads(repair_json(raw))
     clauses: list[Clause] = []
     for item in data:
         text = item.get("text", "").strip()

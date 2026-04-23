@@ -48,7 +48,10 @@ def embed_texts(texts: list[str], batch_size: int = 16) -> np.ndarray:
             pooled = _mean_pool(out.last_hidden_state, enc["attention_mask"])
             pooled = torch.nn.functional.normalize(pooled, p=2, dim=1)
             embs.append(pooled.cpu().numpy())
-    return np.vstack(embs)
+    arr = np.vstack(embs)
+    # Replace any NaN/Inf from degenerate tokenizations (empty text, pure-punctuation
+    # chunks) with zeros — keeps downstream matmul numerically safe.
+    return np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
 
 
 def embed_one(text: str) -> np.ndarray:

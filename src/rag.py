@@ -54,13 +54,55 @@ TASK: Answer the user's question grounded in the retrieved clauses and any India
 Final response should be only the answer text (no JSON, no code fences)."""
 
 
+# Anchor on the word "clause[s]" (word boundary on both sides), then capture the
+# following comma/"and"-joined list of numbers. Lets us handle "clause 5",
+# "Clauses 2 and 7", "clauses #3, 9, 11", etc.
+CLAUSE_REF_RE = re.compile(
+    r"\bclauses?\b\s*((?:#?\s*\d+\s*(?:(?:,|and|&)\s*)?)+)",
+    re.IGNORECASE,
+)
+NUM_RE = re.compile(r"\d+")
+
+
+def _extract_clause_refs(query: str) -> list[int]:
+    out: list[int] = []
+    for chunk in CLAUSE_REF_RE.findall(query):
+        for n in NUM_RE.findall(chunk):
+            cid = int(n)
+            if cid not in out:
+                out.append(cid)
+    return out
+
+
 def retrieve(query: str, clauses: list[dict]) -> list[RetrievedClause]:
     if not clauses:
         return []
     q_emb = embedder.embed_one(query)
     emb_matrix = np.vstack([c["embedding"] for c in clauses])
     sims = emb_matrix @ q_emb
-    top_idx = np.argsort(-sims)[:TOP_K]
+
+    id_to_pos = {c["clause_id"]: i for i, c in enumerate(clauses)}
+    forced_positions: list[int] = []
+    for cid in _extract_clause_refs(query):
+        if cid in id_to_pos:
+            forced_positions.append(id_to_pos[cid])
+
+    # Forced refs first (preserve user-typed order), then fill with semantic top-K
+    seen = set(forced_positions)
+    order = list(forced_positions)
+    for i in np.argsort(-sims):
+        i = int(i)
+        if i in seen:
+            continue
+        order.append(i)
+        seen.add(i)
+        if len(order) >= max(TOP_K, len(forced_positions) + TOP_K):
+            break
+
+    # Cap at TOP_K unless explicit refs push us higher
+    cap = max(TOP_K, len(forced_positions))
+    order = order[:cap]
+
     return [
         RetrievedClause(
             clause_id=clauses[i]["clause_id"],
@@ -70,7 +112,7 @@ def retrieve(query: str, clauses: list[dict]) -> list[RetrievedClause]:
             section=clauses[i].get("section", ""),
             similarity=float(sims[i]),
         )
-        for i in top_idx
+        for i in order
     ]
 
 

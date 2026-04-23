@@ -71,7 +71,8 @@ def consult(query: str, k: int = 3) -> list[dict]:
     texts, meta, index_emb = _load_index()
     q_emb = embedder.embed_one(query)  # already L2-normalized
     # index_emb also L2-normalized from embedder.embed_texts → cosine = dot product
-    sims = index_emb @ q_emb
+    with np.errstate(all="ignore"):  # suppress cosmetic matmul fp warnings
+        sims = index_emb @ q_emb
     top_idx = np.argsort(-sims)[:k]
     return [
         {
