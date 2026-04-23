@@ -56,9 +56,10 @@ Final response should be only the answer text (no JSON, no code fences)."""
 
 # Anchor on the word "clause[s]" (word boundary on both sides), then capture the
 # following comma/"and"-joined list of numbers. Lets us handle "clause 5",
-# "Clauses 2 and 7", "clauses #3, 9, 11", etc.
+# "Clauses 2 and 7", "clauses #3, 9, 11", and common typos like "claus 7",
+# "clauses" → "clauses", "clasue" → not handled (too weird).
 CLAUSE_REF_RE = re.compile(
-    r"\bclauses?\b\s*((?:#?\s*\d+\s*(?:(?:,|and|&)\s*)?)+)",
+    r"\bclaus(?:e|es)?\b\s*((?:#?\s*\d+\s*(?:(?:,|and|&)\s*)?)+)",
     re.IGNORECASE,
 )
 NUM_RE = re.compile(r"\d+")
