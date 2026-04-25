@@ -1,10 +1,10 @@
-# Demo contract — 8-clause Indian rental agreement
+# Sample contract — 8-clause Indian rental + employment agreement
 
-Copy the text between the `===` markers and paste into the "Upload PDF / paste text" box (toggle "paste text instead"). Processes in ~40 seconds. Exercises all UI features — 2 high-risk, 2 aggressive, 4 standard clauses spanning rental + employment-adjacent Indian statutes.
+A composite sample for trying LexAI end-to-end. Copy the text between the `===` markers and paste into the **paste-text** input. Processes in ~40 seconds. Exercises every UI surface — 2 high-risk, 2 aggressive, 4 standard clauses spanning rental and employment-adjacent Indian statutes.
 
 ---
 
-## What each clause is (spoilers — don't read during the live demo)
+## Expected classification per clause
 
 | # | Expected type | Expected risk | Statute |
 |---|---|---|---|
@@ -45,18 +45,11 @@ LEAVE AND LICENCE + EMPLOYMENT AGREEMENT (composite sample for demo)
 
 ---
 
-## Expected UI behaviour when you paste and click Analyze
+## Expected UI behaviour after Analyze
 
 - **Header banner** within ~30-40 s: *"Composite rental and employment agreement, Bengaluru"* · posture: **HIGH**
-- **Top 3 concerns** will include clauses 2, 4, and 5 (the suspect ones)
+- **Top 3 concerns** include clauses 2, 4, and 5
 - **Metric cards:** roughly 2 High · 2-3 Medium · 3-4 Low
-- **Left column (text input mode)** will show a clause list, NOT a PDF view (text paste has no bboxes). That's expected.
-- **Clicking clauses 2, 4, or 5** should show red badges + the specific Indian statute citation + negotiation script
-- **Chat panel** — try: *"Can I legally refuse clause 4?"* — Claude should cite Section 106 and say the waiver is void.
-
----
-
-## Contingency if the demo misbehaves
-
-- If Claude API latency spikes, `asyncio.gather` may take 60-90 s instead of 30 s. Pre-upload the contract during your intro slide so results are ready when you switch to the UI.
-- If a specific clause mis-classifies, stay calm — open chat and ask *"why did clause 5 get flagged?"* Claude will explain using the retrieved Indian statute references via the Advisor tool.
+- **Left column** in text-paste mode shows a clause list rather than a PDF view (text paste has no bboxes — expected)
+- **Clicking clauses 2, 4, or 5** shows red badges + the specific Indian statute citation + negotiation script
+- **Chat panel** — try: *"Can I legally refuse clause 4?"* — the answer cites Section 106 of the TP Act and treats the waiver as void.

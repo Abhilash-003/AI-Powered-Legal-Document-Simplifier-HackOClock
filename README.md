@@ -78,7 +78,7 @@ Q&A (on user question):
   └─ rag.py            (embed query → top-3 contract clauses + optional Advisor consult → Claude answer)
 ```
 
-See [`docs/pitch/PIPELINE_FLOW.md`](docs/pitch/PIPELINE_FLOW.md) for ASCII flow + Mermaid + shared-memory rail diagrams.
+See [`docs/PIPELINE_FLOW.md`](docs/PIPELINE_FLOW.md) for ASCII flow + Mermaid + shared-memory rail diagrams.
 
 ---
 
