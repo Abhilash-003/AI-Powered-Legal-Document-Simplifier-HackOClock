@@ -19,25 +19,35 @@ st.set_page_config(
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
       :root {
-        --paper:      #fbf9f4;
-        --paper-2:    #f4f0e6;
+        --paper:      #ede4d0;    /* deeper page background — warm cream */
+        --paper-2:    #faf6eb;    /* card/panel — LIFTS above page */
+        --paper-3:    #efe8d4;    /* inset/recessed surface */
         --ink:        #171412;
         --ink-2:      #3b3530;
         --ink-3:      #756b62;
-        --rule:       #e8e2d5;
-        --rule-2:     #d9d1bf;
+        --rule:       #d9cfb7;    /* warmer rule to match deeper paper */
+        --rule-2:     #c9bd9d;
         --crimson:    #b91c1c;
         --crimson-2:  #991b1b;
         --ochre:      #b45309;
         --forest:     #15803d;
+        --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 8px 20px -14px rgba(80,60,30,0.25);
         --serif:      'Instrument Serif', 'Iowan Old Style', Georgia, serif;
         --sans:       'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         --mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
       }
 
-      /* App chrome */
+      /* App chrome — deeper paper + warm radial atmosphere */
       html, body { background: var(--paper) !important; color: var(--ink); }
-      .stApp { background: var(--paper) !important; font-family: var(--sans); color: var(--ink); }
+      .stApp {
+        background: var(--paper) !important;
+        font-family: var(--sans); color: var(--ink);
+        background-image:
+          radial-gradient(at 8% 12%, rgba(210,180,120,0.18) 0, transparent 45%),
+          radial-gradient(at 92% 85%, rgba(180,90,30,0.10) 0, transparent 55%),
+          radial-gradient(at 50% 50%, rgba(240,225,195,0.12) 0, transparent 70%) !important;
+        background-attachment: fixed !important;
+      }
 
       /* Preserve Material icon fonts (button close ×, status chevron, etc.) */
       .material-icons,
@@ -121,12 +131,13 @@ st.markdown("""<style>
       }
       .cap b { color: var(--crimson); font-weight: 600; }
 
-      /* Intake card (pre-upload) */
+      /* Intake card (pre-upload) — lifted with warm shadow */
       div[data-testid="stFileUploader"] {
         background: var(--paper-2);
         border: 1px dashed var(--rule-2);
         border-radius: 6px;
         padding: 10px;
+        box-shadow: var(--shadow-card);
       }
       div[data-testid="stFileUploader"] section { background: transparent; border: none; }
       div[data-testid="stFileUploaderDropzone"] {
@@ -134,11 +145,12 @@ st.markdown("""<style>
       }
       div[data-testid="stFileUploader"] small, div[data-testid="stFileUploader"] span { color: var(--ink-3); }
 
-      /* Containers with borders — warm rule */
+      /* Containers with borders — lifted cards with warm shadow */
       div[data-testid="stVerticalBlockBorderWrapper"] {
         border-color: var(--rule) !important;
-        background: var(--paper) !important;
+        background: var(--paper-2) !important;
         border-radius: 6px !important;
+        box-shadow: var(--shadow-card) !important;
       }
 
       /* Primary button — ink-black, hover crimson. Force text color on all
@@ -221,6 +233,7 @@ st.markdown("""<style>
         border-radius: 6px;
         padding: 14px 16px 12px 16px;
         position: relative;
+        box-shadow: var(--shadow-card);
       }
       .metric-card .metric-label {
         font-family: var(--sans);
@@ -246,16 +259,16 @@ st.markdown("""<style>
         font-weight: 600;
         color: var(--ink-2);
       }
-      .metric-high       { border-left-color: var(--crimson); background: #fbecec; }
+      .metric-high       { border-left-color: var(--crimson); background: #f9dcdc; border-color: #f5c6c6; }
       .metric-high .metric-value { color: var(--crimson); }
       .metric-high .metric-label { color: var(--crimson-2); }
-      .metric-med        { border-left-color: var(--ochre);   background: #fdf3e3; }
+      .metric-med        { border-left-color: var(--ochre);   background: #fae8ca; border-color: #f1d4a3; }
       .metric-med  .metric-value { color: var(--ochre); }
       .metric-med  .metric-label { color: var(--ochre); }
-      .metric-low        { border-left-color: var(--forest);  background: #e9f7ef; }
+      .metric-low        { border-left-color: var(--forest);  background: #dcefe2; border-color: #b8dcc6; }
       .metric-low  .metric-value { color: var(--forest); }
       .metric-low  .metric-label { color: var(--forest); }
-      .metric-total      { border-left-color: var(--ink);     background: var(--paper-2); }
+      .metric-total      { border-left-color: var(--ink);     background: var(--paper-3); }
       .metric-total .metric-value { color: var(--ink); }
 
       /* Risk pip (inline dot) */
@@ -272,9 +285,9 @@ st.markdown("""<style>
       .risk-med   { color: var(--ochre); }
       .risk-low   { color: var(--forest); }
 
-      /* Clause detail boxes */
+      /* Clause detail boxes — deeper, warmer, more saturated per Option 1 */
       .clause-original {
-        background: var(--paper-2) !important;
+        background: var(--paper-3) !important;
         padding: 14px 16px;
         border-left: 3px solid var(--ink-3);
         border-radius: 3px;
@@ -284,7 +297,7 @@ st.markdown("""<style>
         color: var(--ink) !important;
       }
       .clause-plain {
-        background: #f2faf5 !important;
+        background: #e9f5ed !important;
         padding: 14px 16px;
         border-left: 3px solid var(--forest);
         border-radius: 3px;
@@ -294,7 +307,7 @@ st.markdown("""<style>
         color: #0f3b24 !important;
       }
       .statute-box {
-        background: #faf6ec !important;
+        background: #f7efd6 !important;
         padding: 12px 14px;
         border-left: 3px solid var(--crimson);
         border-radius: 3px;
@@ -306,7 +319,7 @@ st.markdown("""<style>
       .statute-box b { color: var(--crimson-2) !important; font-weight: 500; }
       .statute-box i { color: var(--ink-2) !important; }
       .negotiation-box {
-        background: #fff8e6 !important;
+        background: #fbf1d0 !important;
         color: #3a2a08 !important;
         padding: 14px 16px;
         border-left: 3px solid var(--ochre);
@@ -318,13 +331,14 @@ st.markdown("""<style>
         word-break: break-word;
       }
 
-      /* Empty-state card (no analysis yet) */
+      /* Empty-state card (no analysis yet) — lifted off page */
       .empty-card {
         border: 1px solid var(--rule);
-        background: var(--paper);
+        background: var(--paper-2);
         border-radius: 6px;
         padding: 22px 26px;
         margin-top: 8px;
+        box-shadow: var(--shadow-card);
       }
       .empty-card h3 {
         font-family: var(--serif); font-weight: 400; font-size: 24px;
