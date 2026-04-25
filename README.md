@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/architecture.png" alt="LexAI Architecture — 8-Stage Pipeline + Advisor-Executor Design" width="100%" />
+</p>
+
 # LexAI — AI-Powered Indian Legal Document Simplifier
 
 An Indian-law-aware contract reader. Upload a rental agreement, employment contract, or consumer terms-of-service PDF, and LexAI surfaces risky clauses inline on the document, rewrites them in plain English, cites the specific Indian statute each clause violates, and generates exact negotiation language you can send back.
@@ -46,10 +50,6 @@ Full evaluation reports + confusion matrices: [`docs/eval/`](docs/eval/).
 ---
 
 ## Architecture
-
-<p align="center">
-  <img src="docs/architecture.png" alt="LexAI Architecture — 8-Stage Pipeline + Advisor-Executor Design" width="100%" />
-</p>
 
 Follows Anthropic's **Advisor-Executor** pattern with real tool-use round-trip:
 
