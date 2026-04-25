@@ -47,6 +47,10 @@ Full evaluation reports + confusion matrices: [`docs/eval/`](docs/eval/).
 
 ## Architecture
 
+<p align="center">
+  <img src="docs/architecture.png" alt="LexAI Architecture — 8-Stage Pipeline + Advisor-Executor Design" width="100%" />
+</p>
+
 Follows Anthropic's **Advisor-Executor** pattern with real tool-use round-trip:
 
 | Role | Component | Produces |
