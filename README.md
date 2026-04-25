@@ -284,13 +284,6 @@ data/processed/               # (gitignored — reproducible) Parquets + referen
 
 ---
 
-## Authors
-
-- **Abhilash Bikkannavar** — design, implementation, training, pipeline
-- **Nachiket Bikkannavar** — contributor
-
-Built during Hack O'Clock 2026.
-
 ## Acknowledgements
 
 - [law-ai/InLegalBERT](https://huggingface.co/law-ai/InLegalBERT) — Paul, Mandal, Goyal, Ghosh (IIT Kharagpur, 2023). Base model pretrained on 5.4M Indian legal documents.
